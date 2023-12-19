@@ -1,0 +1,30 @@
+.sidebar {
+  border-radius: 15px;
+  padding: 15px 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.admin-list {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-content: center;
+  gap: 15px;
+
+  &__item {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__btn {
+    background-color: inherit;
+    font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+      "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+    border: none;
+    color: white;
+    cursor: pointer;
+  }
+}

@@ -1,0 +1,29 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  // font-size: 15px;
+}
+
+header {
+  grid-area: 1 / 1 / 2 / 6;
+  // margin-bottom: 15px;
+  background-color: salmon;
+}
+
+aside {
+  grid-area: 2 / 1 / 6 / 2;
+  background-color: blue;
+}
+
+main {
+  grid-area: 2 / 2 / 6 / 6;
+  background-color: red;
+  width: 100%;
+  border-radius: 15px;
+  margin-left: 10px;
+  background-color: #08c6ff;
+}
