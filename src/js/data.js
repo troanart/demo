@@ -1,4 +1,4 @@
-const nameBtn = ['Усі', 'Онлайн', 'Офлайн', 'Корпоративні'];
+ const nameBtn = ['Усі', 'Онлайн', 'Офлайн', 'Корпоративні'];
 const selectStudents = ['Артем', 'Катя', 'Олег'];
 const selectTeachers = ['Оля', 'Максим', 'Марк'];
 const groupsName = [
@@ -50,7 +50,10 @@ const teachers = [
     name: 'Ольга',
     role: 'teacher',
     bid: 150,
-    salary: 0,
+    salary: 0, 
     id: 1,
   },
 ];
+
+
+export default {nameBtn ,selectStudents, selectTeachers, groupsName, manageBtn, students}

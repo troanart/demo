@@ -5,7 +5,7 @@
   "homepage": "https://troanart.github.io/demo",
   "scripts": {
     "start": "parcel src/*.html",
-    "build": "parcel build src/admin.html --public-url /demo/"
+    "build": "parcel build src/index.html --public-url /demo/"
   },
   "repository": {
     "type": "git",

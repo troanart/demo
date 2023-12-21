@@ -14,9 +14,9 @@ const manageBtn = [
   'Додати викладача',
   'Редагувати викладача',
   'Видалити викладача',
-  // 'Додати групу',
-  // "Редагувати групу",
-  // "Видалити групу"
+  'Додати групу',
+  "Редагувати групу",
+  "Видалити групу"
 ];
 const students = [
   {
@@ -101,9 +101,6 @@ const checkboxesData = [
 
 
 
-
-
-
 const btnList = document.querySelector('.admin-list');
 const mainContent = document.querySelector('.content');
 btnList.addEventListener('click', onClick);
@@ -124,6 +121,7 @@ function onClick(e) {
     mainContent.innerHTML = '';
     renderManagment(manageBtn);
   } else if (e.target.classList.contains('stats')) {
+    renderMarkup()
   }
 }
 
@@ -131,83 +129,6 @@ function onClick(e) {
 
 
 // Группы ----------------------------------------
-
-function renderTableGroop(selectedOption,array) {
-  
-  const tableContainer = document.querySelector('.content');
- 
-  const title = document.createElement('h2');
-  title.textContent = `Выбрано: ${selectedOption}`;
-  tableContainer.appendChild(title);
-
-  const table = document.createElement('table');
-  table.classList.add('table', 'table-sm', 'table-dark')
-
-  const headerRow = table.createTHead().insertRow();
-  headerRow.insertCell(0).textContent = 'Имя';
-  headerRow.insertCell(1).textContent = 'Группа';
-  headerRow.insertCell(2).textContent = 'Тариф';
-  headerRow.insertCell(3).textContent = 'Количество уроков';
-  headerRow.insertCell(4).textContent = 'Посещённых уроков';
-  
-  const tbody = table.createTBody();
-  for (let i = 0; i <= array.length - 1; i++) {
-      const row = tbody.insertRow();
-      row.insertCell(0).textContent = students[i].name;
-      row.insertCell(1).textContent = students[i].groop;
-      row.insertCell(2).textContent = students[i].tarrif;
-      row.insertCell(3).textContent = students[i].allLessons;
-      row.insertCell(4).textContent = students[i].checkLessons;
-
-      // row.addEventListener('click', () => {
-      //     createNewTableWithDates(students[i].name);
-      // });
-      row.addEventListener('click', (function (currentIndex) {
-        return function () {
-            createNewTableWithDates(array[i].name, currentIndex);
-        };
-    })(i));
-  }
-  
-  tableContainer.appendChild(table);
-}
-
-
-
-function createNewTableWithDates(studentName, index) {
-  
-  const newTableContainer = document.querySelector('.content');
-  const newTable = document.createElement('table');
-  newTable.classList.add('table', 'table-sm', 'table-dark')
-
-  const newHeaderRow = newTable.createTHead().insertRow();
-  const nameCell = newHeaderRow.insertCell(0);
-  nameCell.textContent = `${studentName}`;
-
-  newHeaderRow.insertCell(1);
-
-  for (let i = 1; i <= 14; i++) {
-    const date = i < 10 ? `0${i}.11` : `${i}.11`;
-    const cell = newHeaderRow.insertCell(i);
-    cell.textContent = date;
-
-     cell.addEventListener('click', (function () {
-      return function () {
-          if (cell.style.backgroundColor === 'red') {
-            cell.style.backgroundColor = '';
-        } else {
-            cell.style.backgroundColor = 'red';
-            students[index].checkLessons += 1;
-        }
-      };
-     })(i))
-  }
-  newTableContainer.appendChild(newTable);
-}
-
-//----------------------------------------------
-
-// Общие -----------------------------------------
 function renderButtons(array) {
   const mainContent = document.querySelector('.content');
   const list = document.createElement('ul')
@@ -243,27 +164,176 @@ function renderSelect(array) {
   select.addEventListener('change', () =>  renderTableGroop(select.value, students));
 }
 
+
+
+
+function renderTableGroop(selectedOption,array) {
+  
+  const tableContainer = document.querySelector('.content');
+ 
+  const title = document.createElement('h2');
+  title.textContent = `Выбрано: ${selectedOption}`;
+  tableContainer.appendChild(title);
+
+  const table = document.createElement('table');
+  table.classList.add('table', 'table-sm', 'table-dark')
+
+  const headerRow = table.createTHead().insertRow();
+  headerRow.insertCell(0).textContent = 'Имя';
+  headerRow.insertCell(1).textContent = 'Группа';
+  headerRow.insertCell(2).textContent = 'Тариф';
+  headerRow.insertCell(3).textContent = 'Количество уроков';
+  headerRow.insertCell(4).textContent = 'Посещённых уроков';
+  
+  const tbody = table.createTBody();
+  for (let i = 0; i <= array.length - 1; i++) {
+      const row = tbody.insertRow();
+      row.insertCell(0).textContent = students[i].name;
+      row.insertCell(1).textContent = students[i].groop;
+      row.insertCell(2).textContent = students[i].tarrif;
+      row.insertCell(3).textContent = students[i].allLessons;
+      row.insertCell(4).textContent = students[i].checkLessons;
+
+      
+    //   row.addEventListener('click', (function (currentIndex) {
+    //     return function () {
+    //         createNewTableWithDates(array[i].name, currentIndex);
+    //     };
+    // })(i));
+
+    
+
+  }
+  
+  tableContainer.appendChild(table);
+  table.addEventListener('click', createNewTableWithDates(students) )
+}
+
+
+
+function createNewTableWithDates(studentsArray) {
+  const newTableContainer = document.querySelector('.content');
+  const newTable = document.createElement('table');
+  newTable.classList.add('table', 'table-sm', 'table-dark');
+
+  const newHeaderRow = newTable.createTHead().insertRow();
+  const nameHeaderCell = newHeaderRow.insertCell(0);
+  nameHeaderCell.textContent = 'ИМЯ';
+
+  // Создаем ячейки для дат в шапке
+  for (let i = 1; i <= 14; i++) {
+    const date = i < 10 ? `0${i}.11` : `${i}.11`;
+    const dateCell = newHeaderRow.insertCell(i);
+    dateCell.textContent = date;
+  }
+
+  // Создаем строки для каждого студента
+  for (let i = 0; i < studentsArray.length; i++) {
+    const studentRow = newTable.insertRow();
+    const nameCell = studentRow.insertCell(0);
+    nameCell.textContent = studentsArray[i].name;
+
+    // Создаем ячейки для дат и добавляем обработчики клика
+    for (let j = 1; j <= 14; j++) {
+      const dateCell = studentRow.insertCell(j);
+      dateCell.addEventListener('click', (function (index, date) {
+        return function () {
+          toggleCellColor(index, date);
+        };
+      })(i, j));
+    }
+  }
+
+  // newTableContainer.innerHTML = ''; // Очищаем контейнер перед добавлением новой таблицы
+  newTableContainer.appendChild(newTable);
+
+  function toggleCellColor(studentIndex, dateIndex) {
+    const cell = newTable.rows[studentIndex + 1].cells[dateIndex];
+    if (cell.style.backgroundColor === 'red') {
+      cell.style.backgroundColor = '';
+      studentsArray[studentIndex].checkLessons -= 1;
+    } else {
+      cell.style.backgroundColor = 'red';
+      studentsArray[studentIndex].checkLessons += 1;
+    }
+  }
+}
+
 // ----------------------------------------------------------------------------
 
 /// Управление 
 
 function renderManagment(array) {
   const mainContent = document.querySelector('.content');
-  const list = document.createElement('ul')
-  list.classList.add( 'mx-auto', 'p-2', 'd-flex', 'justify-content-center')
- 
+  const list = document.createElement('ul');
+  list.classList.add('managment-list', 'mx-auto', 'p-2', 'd-flex', 'justify-content-center', "gap-2", 'flex-wrap' )
+  
   for (let i = 0; i <= array.length - 1; i++) {
     const button = document.createElement('button');
     button.textContent = `${array[i]}`;
     button.classList.add('content-btn', 'btn' ,'btn-primary');
-    button.style.marginRight = '15px';
-    button.style.padding = '8px 50px';
     list.appendChild(button);
   }
 
   mainContent.appendChild(list)
-  
+  list.addEventListener('click', (e) => {
+    if(e.target.textContent === 'Додати студента') {
+      renderAddStudentForm()
+    }
+    
+  })
 }
+  function renderAddStudentForm() {
+    const formContainer = document.querySelector('.tableContainer');
+    formContainer.classList.add('d-flex','justify-content-center')
+    formContainer.innerHTML = '';
+    
+  
+    const form = document.createElement('form');
+    form.classList.add('w-50','border', 'border-success', 'p-2')
+    form.innerHTML = `
+      <label for="fullName">ФИО:</label>
+      <input class="form-control" type="text" id="fullName" name="fullName" required><br>
+  
+      <label for="phone">Телефон:</label>
+      <input class="form-control" type="tel" id="phone" name="phone" required><br>
+  
+      <label for="group">Группа:</label>
+      <select id="group" name="group">
+        <option value="Группа 1">Группа 1</option>
+        <option value="Группа 2">Группа 2</option>
+        <!-- Добавьте остальные группы по аналогии -->
+      </select><br>
+  
+      <label for="tariff">Тариф:</label>
+      <input class="form-control" type="text" id="tariff" name="tariff" required><br>
+  
+      <label for="deposit">Депозит:</label>
+      <input class="form-control" type="text" id="deposit" name="deposit" required><br>
+  
+      <button class='form-btn' type="button">Сохранить</button>
+    `;
+    formContainer.appendChild(form);
+    const buton = document.querySelector('.form-btn')
+    buton.addEventListener('click',saveStudent)
+    
+    function saveStudent() {
+
+      const fullName = document.getElementById('fullName').value;
+      const phone = document.getElementById('phone').value;
+      const group = document.getElementById('group').value;
+      const tariff = document.getElementById('tariff').value;
+      const deposit = document.getElementById('deposit').value;
+
+      console.log('ФИО:', fullName);
+      console.log('Телефон:', phone);
+      console.log('Группа:', group);
+      console.log('Тариф:', tariff);
+      console.log('Депозит:', deposit);
+
+      formContainer.innerHTML = '';
+    }
+  }
 
 // Викладач -----------------------------------------------------
 
@@ -327,10 +397,8 @@ function renderTeachersTable() {
 
   contentContainer.appendChild(teachersTable);
 
-
   function applyFilters() {
-   
-    
+
     const checkboxes = document.querySelectorAll('.form-check-input')
     
     const filteredTeachers = teachers.filter(teacher => {
@@ -375,5 +443,106 @@ function renderTeachersTable() {
     }
   });
 }
+
+
+//Статистика  -----------------------------------------------------------
+
+function generateMarkup() {
+  
+  function generateRadioGroup(id, label) {
+    return `
+      <input type="radio" class="btn-check" name="btnradio" id="${id}" autocomplete="off">
+      <label class="btn btn-outline-primary" for="${id}">${label}</label>
+    `;
+  }
+ 
+  const radioGroup1 = generateRadioGroup('btnradio1', '2 недели');
+  const radioGroup2 = generateRadioGroup('btnradio2', 'месяц');
+  const radioGroup3 = generateRadioGroup('btnradio3', 'год');
+  const radioButtons = `${radioGroup1}${radioGroup2}${radioGroup3}`;
+
+ 
+  const calendarSection = `
+    <div class="calendar">
+      <div class="mb-3">
+        <label for="from1" class="form-label">От</label>
+        <input type="email" class="form-control" id="from1" aria-describedby="emailHelp">
+      </div>
+      <div class="mb-3">
+        <label for="to" class="form-label">До</label>
+        <input type="text" class="form-control" id="to">
+      </div>
+    </div>
+  `;
+
+
+  const listSection = `
+    <ul class="list-group-flush">
+      <li class="list-group-item">
+        <p>Всего учеников</p>
+        <span></span>
+      </li>
+      <li class="list-group-item">
+        <p>Всего учителей</p>
+        <span></span>
+      </li>
+      <li class="list-group-item">
+        <p>Общий <span class='blue'>доход</span> за месяц</p>
+        <span></span>
+      </li>
+      <li class="list-group-item">
+        <p>Общая <span class='green'>прибыль</span> за месяц</p>
+        <span></span>
+      </li>
+    </ul>
+  `;
+
+
+  const radioGroup4 = generateRadioGroup('btnradio4', 'Загальна');
+  const radioGroup5 = generateRadioGroup('btnradio5', 'Групи');
+  const radioGroup6 = generateRadioGroup('btnradio6', 'Викладачі');
+  const radioButtons2 = `${radioGroup4}${radioGroup5}${radioGroup6}`;
+
+
+  const containerSection = `
+    <div class="bg-light-subtle">
+      <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+        ${radioButtons2}
+      </div>
+      <div class="mini-container">
+        <p class="text-start">Загальний дохід: <span id="totalIncome"></span></p>
+        <p class="text-start">Загальний дохід викладачів: <span id="totalIncomeTeacher"></span></p>
+        <p class="text-start">Загальний дохід груп: <span id="totalIncomeGroup"></span></p>
+      </div>
+      <p class="text-end">Чистий дохід за місяць: <span id="clearIncome"></span></p>
+    </div>
+  `;
+
+
+  const finalMarkup = `
+    ${radioButtons}
+    ${calendarSection}
+    ${listSection}
+    ${containerSection}
+  `;
+ 
+  return finalMarkup ;
+}
+
+function renderMarkup() {
+  const contentContainer = document.querySelector('.content');
+  const markup = generateMarkup();
+  contentContainer.innerHTML = markup;
+}
+
+
+
+
+
+
+
+
+
+
 
 
