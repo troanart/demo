@@ -138,7 +138,7 @@ function renderButtons(array) {
   for (let i = 0; i <= array.length - 1 ; i++) {
     const button = document.createElement('button');
     button.textContent = `${array[i]}`;
-    button.classList.add('content-btn', 'btn' ,'btn-primary');
+    button.classList.add( 'btn' ,'btn-primary');
     button.style.marginRight = '15px';
     button.style.padding = '8px 50px';
     list.appendChild(button)
@@ -151,7 +151,7 @@ function renderSelect(array) {
   const select = document.createElement('select');
   const mainContent = document.querySelector('.content');
   select.id = 'contentSelect';
-  select.classList.add('form-select', "mt-2", 'mb-2');
+  select.classList.add('form-select', "mt-2", 'mb-2', 'w-50', 'mx-auto');
 
   for (let i = 0; i <= array.length - 1; i++) {
     const option1 = document.createElement('option');
@@ -176,7 +176,7 @@ function renderTableGroop(selectedOption,array) {
   tableContainer.appendChild(title);
 
   const table = document.createElement('table');
-  table.classList.add('table', 'table-sm', 'table-dark')
+  table.classList.add('table', 'table-sm', 'table-primary', 'table-bordered', 'border-secondary')
 
   const headerRow = table.createTHead().insertRow();
   headerRow.insertCell(0).textContent = 'Имя';
@@ -214,26 +214,26 @@ function renderTableGroop(selectedOption,array) {
 function createNewTableWithDates(studentsArray) {
   const newTableContainer = document.querySelector('.content');
   const newTable = document.createElement('table');
-  newTable.classList.add('table', 'table-sm', 'table-dark');
+  newTable.classList.add('table', 'table-sm', 'table-primary', 'table-bordered', 'border-primary', 'w-50', 'mx-auto');
 
   const newHeaderRow = newTable.createTHead().insertRow();
   const nameHeaderCell = newHeaderRow.insertCell(0);
   nameHeaderCell.textContent = 'ИМЯ';
 
-  // Создаем ячейки для дат в шапке
+  
   for (let i = 1; i <= 14; i++) {
     const date = i < 10 ? `0${i}.11` : `${i}.11`;
     const dateCell = newHeaderRow.insertCell(i);
     dateCell.textContent = date;
   }
 
-  // Создаем строки для каждого студента
+
   for (let i = 0; i < studentsArray.length; i++) {
     const studentRow = newTable.insertRow();
     const nameCell = studentRow.insertCell(0);
     nameCell.textContent = studentsArray[i].name;
 
-    // Создаем ячейки для дат и добавляем обработчики клика
+    
     for (let j = 1; j <= 14; j++) {
       const dateCell = studentRow.insertCell(j);
       dateCell.addEventListener('click', (function (index, date) {
@@ -271,7 +271,7 @@ function renderManagment(array) {
   for (let i = 0; i <= array.length - 1; i++) {
     const button = document.createElement('button');
     button.textContent = `${array[i]}`;
-    button.classList.add('content-btn', 'btn' ,'btn-primary');
+    button.classList.add( 'btn' ,'btn-primary');
     list.appendChild(button);
   }
 
@@ -290,48 +290,72 @@ function renderManagment(array) {
     
   
     const form = document.createElement('form');
-    form.classList.add('w-50','border', 'border-success', 'p-2')
+    form.classList.add('p-3', 'mt-5', 'border', 'border-primary','rounded')
     form.innerHTML = `
-      <label for="fullName">ФИО:</label>
-      <input class="form-control" type="text" id="fullName" name="fullName" required><br>
-  
-      <label for="phone">Телефон:</label>
-      <input class="form-control" type="tel" id="phone" name="phone" required><br>
-  
-      <label for="group">Группа:</label>
-      <select id="group" name="group">
+    <div class="row">
+      <div class="col">
+        <input type="text" class="form-control" placeholder="Iм'я" aria-label="First name"><br>
+      </div>
+        <div class="col">
+          <input type="text" class="form-control" placeholder="Прізвище" aria-label="Last name"><br>
+        </div>
+    </div>
+    <div class="row ">
+      <div class="col">
+        <input type="tel" class="form-control" placeholder="Телефон(+380)" aria-label="telephon"><br>
+      </div>
+      <div class="col">
+      <select id="group" class="form-select" name="group">
         <option value="Группа 1">Группа 1</option>
         <option value="Группа 2">Группа 2</option>
         <!-- Добавьте остальные группы по аналогии -->
       </select><br>
-  
-      <label for="tariff">Тариф:</label>
-      <input class="form-control" type="text" id="tariff" name="tariff" required><br>
-  
-      <label for="deposit">Депозит:</label>
-      <input class="form-control" type="text" id="deposit" name="deposit" required><br>
-  
-      <button class='form-btn' type="button">Сохранить</button>
+      </div>
+    </div>
+    <div class="row ">
+      <div class="col">
+        <input type="number" class="form-control" placeholder="Тариф" aria-label="First name"><br>
+      </div>
+        <div class="col">
+          <input type="number" class="form-control" placeholder="Депозит" aria-label="Last name"><br>
+        </div>
+    </div>
+      <button class='form-btn btn btn-primary' type="button">Сохранить</button>
     `;
     formContainer.appendChild(form);
     const buton = document.querySelector('.form-btn')
     buton.addEventListener('click',saveStudent)
     
     function saveStudent() {
+      formContainer.innerHTML = ''
+      const miniContainer = document.createElement('div')
+      miniContainer.innerHTML = `<div class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">
+          Hello, world! This is a toast message.
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+    `
+    formContainer.appendChild(miniContainer)
+   
+      
+      
 
-      const fullName = document.getElementById('fullName').value;
-      const phone = document.getElementById('phone').value;
-      const group = document.getElementById('group').value;
-      const tariff = document.getElementById('tariff').value;
-      const deposit = document.getElementById('deposit').value;
+      // const fullName = document.getElementById('fullName').value;
+      // const phone = document.getElementById('phone').value;
+      // const group = document.getElementById('group').value;
+      // const tariff = document.getElementById('tariff').value;
+      // const deposit = document.getElementById('deposit').value;
 
-      console.log('ФИО:', fullName);
-      console.log('Телефон:', phone);
-      console.log('Группа:', group);
-      console.log('Тариф:', tariff);
-      console.log('Депозит:', deposit);
+      // console.log('ФИО:', fullName);
+      // console.log('Телефон:', phone);
+      // console.log('Группа:', group);
+      // console.log('Тариф:', tariff);
+      // console.log('Депозит:', deposit);
 
-      formContainer.innerHTML = '';
+      // formContainer.innerHTML = '';
     }
   }
 
@@ -343,6 +367,7 @@ function renderTeachersTable() {
 
   const searchInput = document.createElement('input');
   searchInput.type = 'search';
+  searchInput.classList.add('me-5', 'd-inline-block', 'rounded-pill', 'rounded-1', 'border', 'border-primary', 'p-2' )
   searchInput.placeholder = 'Поиск';
   contentContainer.appendChild(searchInput);
 
@@ -370,6 +395,7 @@ function renderTeachersTable() {
 
   const createBtnFilter = document.createElement('button')
   createBtnFilter.textContent = 'Додати фільтр'
+  createBtnFilter.classList.add('btn','btn-primary')
   contentContainer.appendChild(createBtnFilter)
   createBtnFilter.addEventListener('click', applyFilters)
 
@@ -463,36 +489,42 @@ function generateMarkup() {
 
  
   const calendarSection = `
-    <div class="calendar">
-      <div class="mb-3">
-        <label for="from1" class="form-label">От</label>
-        <input type="email" class="form-control" id="from1" aria-describedby="emailHelp">
+    <div class="calendar ms-5 w-75 d-inline-flex justify-content-end ">
+      <div class="me-1">
+        <input type="email" placeholder="Від" class="form-control  " id="from1" aria-describedby="emailHelp">
       </div>
-      <div class="mb-3">
-        <label for="to" class="form-label">До</label>
-        <input type="text" class="form-control" id="to">
+      <div class="me-1">
+        <input type="text"  placeholder="До" class="form-control " id="to">
       </div>
     </div>
   `;
 
 
   const listSection = `
-    <ul class="list-group-flush">
-      <li class="list-group-item">
-        <p>Всего учеников</p>
-        <span></span>
+    <ul class="list-group-flush d-flex gap-2 justify-content-center mt-5 mb-5 p-2">
+      <li class="list-group-item card  w-25">
+        <div class="card-body text-center">
+          <p class='card-text text-center  mb-2'>Всьго учнів</p>
+          <button class='w-25 btn bg-info'>50</button>
+        </div>
       </li>
-      <li class="list-group-item">
-        <p>Всего учителей</p>
-        <span></span>
+      <li class="list-group-item card w-25">
+        <div class="card-body text-center ">
+          <p class='card-text text-center  mb-2'>Всього викладачів</p>
+          <button class='w-25 btn bg-info'>5</button>
+        </div>
       </li>
-      <li class="list-group-item">
-        <p>Общий <span class='blue'>доход</span> за месяц</p>
-        <span></span>
+      <li class="list-group-item card w-50">
+        <div class="card-body text-center">
+          <p class='card-text text-center  mb-2'>Чистий дохід</p>
+          <button class='w-25 btn bg-success'>5000</button>
+        </div>
       </li>
-      <li class="list-group-item">
-        <p>Общая <span class='green'>прибыль</span> за месяц</p>
-        <span></span>
+      <li class="list-group-item card w-25 ">
+        <div class="card-body text-center">
+          <p class='card-text text-center mb-2'>Загальний дохід</p>
+          <button class='w-25 btn bg-success'>8000</button>
+        </div>
       </li>
     </ul>
   `;
@@ -513,8 +545,12 @@ function generateMarkup() {
         <p class="text-start">Загальний дохід: <span id="totalIncome"></span></p>
         <p class="text-start">Загальний дохід викладачів: <span id="totalIncomeTeacher"></span></p>
         <p class="text-start">Загальний дохід груп: <span id="totalIncomeGroup"></span></p>
+        <p class="text-start">Загальний дохід груп Онлайн: <span id="totalIncomeGroupOffline"></span></p>
+        <p class="text-start">Загальний дохід груп Офлайн: <span id="totalIncomeGroupOnline"></span></p>
+        <p class="text-start">Загальний дохід груп Корпоративих: <span id="totalIncomeGroupCorporate"></span></p>
+        <p class="text-end">Чистий дохід за місяць: <span id="clearIncome"></span></p>
       </div>
-      <p class="text-end">Чистий дохід за місяць: <span id="clearIncome"></span></p>
+      
     </div>
   `;
 

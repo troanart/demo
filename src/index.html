@@ -4,52 +4,53 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="./css/main.min.css" />
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
       crossorigin="anonymous"
     />
+    <link rel="stylesheet" href="./css/main.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;800;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
   </head>
-  <body>
-    <header class="site-header">
-      <h1 class="admin-title">Адміністратор</h1>
-      
+  <body >
+    <header class="h-auto d-block  mx-2 p-2 rounded bg-primary ">
+      <h1 class="fs-4 mb-0" style="color: white;font-family: 'Roboto'; font-weight: 300; ">Адміністратор</h1>
     </header>
-    <div class="container">
-      <aside class="sidebar">
-        <nav class="nav">
-          <ul class="admin-list list" >
-            <li class="admin-list__item">
-              <button class="admin-list__btn groups" type="button">
+    <div class="container-fluid d-flex mt-3 " style="min-height: 92vh;">
+        <nav class="navig navbar p-2  border-bottom rounded border-body bg-primary">
+          <ul class="admin-list list" style="padding-left: 0 !important;color: white;font-family: 'Roboto'; font-weight: 300;" >
+            <li class="admin-list__item ">
+              <button class="admin-list__btn groups btn btn-danger w-100" style="color: white;font-family: 'Roboto'; font-weight: 400;"  type="button">
                 Группи
               </button>
             </li>
             <li class="admin-list__item">
-              <button class="admin-list__btn student" type="button">
+              <button class="admin-list__btn student btn btn-danger w-100 " style="color: white;font-family: 'Roboto'; font-weight: 400;" type="button">
                 Cтуденти
               </button>
             </li>
             <li class="admin-list__item">
-              <button class="admin-list__btn teacher" type="button">
+              <button class="admin-list__btn teacher btn btn-danger w-100" style="color: white;font-family: 'Roboto'; font-weight: 400;" type="button">
                 Викладачі
               </button>
             </li>
             <li class="admin-list__item">
-              <button class="admin-list__btn managment" type="button">
+              <button class="admin-list__btn managment btn btn-danger w-100" style="color: white;font-family: 'Roboto'; font-weight: 400;" type="button">
                 Управління
               </button>
             </li>
             <li class="admin-list__item">
-              <button class="admin-list__btn stats" type="button">
+              <button class="admin-list__btn stats btn btn-danger w-100" style="color: white;font-family: 'Roboto'; font-weight: 400;" type="button">
                 Статистика
               </button>
             </li>
           </ul>
         </nav>
-      </aside>
-      <main>
+      <main class="main bg-light border border-primary" >
         <div class="content">
           <!-- <div class="student-page">
             Страница студента
