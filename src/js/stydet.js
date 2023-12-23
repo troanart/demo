@@ -329,10 +329,10 @@ function renderManagment(array) {
     function saveStudent() {
       formContainer.innerHTML = ''
       const miniContainer = document.createElement('div')
-      miniContainer.innerHTML = `<div class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="d-flex">
+      miniContainer.innerHTML = `<div class="toast show align-items-center text-light bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex"> 
         <div class="toast-body">
-          Hello, world! This is a toast message.
+          Студент успішно зареестрованний!
         </div>
         <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
       </div>
@@ -537,18 +537,18 @@ function generateMarkup() {
 
 
   const containerSection = `
-    <div class="bg-light-subtle">
+    <div class="bg-light-subtle p-2">
       <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
         ${radioButtons2}
       </div>
-      <div class="mini-container">
-        <p class="text-start">Загальний дохід: <span id="totalIncome"></span></p>
-        <p class="text-start">Загальний дохід викладачів: <span id="totalIncomeTeacher"></span></p>
-        <p class="text-start">Загальний дохід груп: <span id="totalIncomeGroup"></span></p>
-        <p class="text-start">Загальний дохід груп Онлайн: <span id="totalIncomeGroupOffline"></span></p>
-        <p class="text-start">Загальний дохід груп Офлайн: <span id="totalIncomeGroupOnline"></span></p>
-        <p class="text-start">Загальний дохід груп Корпоративих: <span id="totalIncomeGroupCorporate"></span></p>
-        <p class="text-end">Чистий дохід за місяць: <span id="clearIncome"></span></p>
+      <div class="mini-container mt-3">
+        <p class="text-start mt-4">Загальний дохід: <button type='button' class='ms-4 text-center bg-primary  btn bg-info  ' id="totalIncome">600</button></p>
+        <p class="text-start mt-4">Загальний дохід викладачів: <button type='button' class='ms-4  text-center bg-primary  btn bg-info  ' id="totalIncomeTeacher">500</button></p>
+        <p class="text-start mt-4">Загальний дохід груп: <button type='button' class='ms-4 text-center bg-primary  btn bg-info  ' id="totalIncomeGroup">800</button></p>
+        <p class="text-start mt-4">Загальний дохід груп Онлайн: <button type='button' class='ms-4 text-center bg-primary  btn bg-info  ' id="totalIncomeGroupOffline">5000</button></p>
+        <p class="text-start mt-4">Загальний дохід груп Офлайн: <button type='button' class='ms-4 text-center bg-primary  btn bg-info  ' id="totalIncomeGroupOnline">10000</button></p>
+        <p class="text-start mt-4">Загальний дохід груп Корпоративих: <button type='button' class='ms-4 text-center bg-primary  btn bg-info  ' id="totalIncomeGroupCorporate">1500</button></p>
+        <p class="text-end">Чистий дохід за місяць: <button type='button' class='ms-4 text-center bg-primary  btn bg-info  ' id="clearIncome">8500</button></p>
       </div>
       
     </div>
