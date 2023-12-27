@@ -15,6 +15,7 @@ const students = [
     allLessons: 8,
     checkLessons: 0,
     id: 1,
+    paymentsArray: Array(14).fill(0)
   },
   {
     name: 'Катя',
@@ -24,6 +25,7 @@ const students = [
     allLessons: 8,
     checkLessons: 0,
     id: 2,
+    paymentsArray: Array(14).fill(0)
   },
   {
     name: 'Олег',
@@ -48,35 +50,24 @@ const teachers = [
   {
     name: 'Марк',
     role: 'teacher',
-    bidIndiv: 150,
-    bidGroup: 200,
+    bidIndiv: 250,
+    bidGroup: 300,
     id: 2,
     income: 0,
   },
-  {
-    name: 'Олег',
-    role: 'teacher',
-    bidIndiv: 250,
-    bidGroup: 300,
-    id: 3,
-    income: 0,
-  },
+  // {
+  //   name: 'Олег',
+  //   role: 'teacher',
+  //   bidIndiv: 250,
+  //   bidGroup: 300,
+  //   id: 3,
+  //   income: 0,
+  // },
 ];
 
-function calculateTeacherPayment(teacher, lessonPrice, attendedStudents) {
-  const totalIncome =
-    lessonPrice *
-    attendedStudents.reduce(
-      (total, student) => total + student.checkLessons,
-      0
-    );
 
-  const perStudentBid = teacher.bidIndiv;
-  const groupBid = teacher.bidGroup;
-  const teacherBid = attendedStudents.length > 1 ? groupBid : perStudentBid;
+let currentTeacher ;
 
-  return totalIncome - teacherBid;
-}
 
 const btnList = document.querySelector('.admin-list');
 const mainContent = document.querySelector('.content');
@@ -85,6 +76,7 @@ btnList.addEventListener('click', onClick);
 function onClick(e) {
   if (e.target.classList.contains('groups')) {
     mainContent.innerHTML = '';
+    renderRadioBatonsandText(teachers)
     renderButtons(nameBtn);
     renderSelect(groupsName);
   } else if (e.target.classList.contains('student')) {
@@ -101,6 +93,8 @@ function onClick(e) {
     renderMarkup();
   }
 }
+
+
 
 function renderButtons(array) {
   const mainContent = document.querySelector('.content');
@@ -119,7 +113,7 @@ function renderButtons(array) {
 }
 
 function renderSelect(array) {
-  console.log(array);
+
   const select = document.createElement('select');
   const mainContent = document.querySelector('.content');
   select.id = 'contentSelect';
@@ -136,11 +130,13 @@ function renderSelect(array) {
   select.addEventListener('change', () =>
     renderTableGroop(select.value, students)
   );
+ 
 }
+
+
 
 function renderTableGroop(selectedOption, array) {
   const tableContainer = document.querySelector('.content');
-
   const title = document.createElement('h2');
   title.textContent = `Выбрано: ${selectedOption}`;
   tableContainer.appendChild(title);
@@ -159,20 +155,98 @@ function renderTableGroop(selectedOption, array) {
   headerRow.insertCell(1).textContent = 'Группа';
   headerRow.insertCell(2).textContent = 'Тариф';
   headerRow.insertCell(3).textContent = 'Количество уроков';
-  headerRow.insertCell(4).textContent = 'Посещённых уроков';
+ 
 
   const tbody = table.createTBody();
-  for (let i = 0; i <= array.length - 1; i++) {
+  for (let i = 0; i < array.length; i++) {
     const row = tbody.insertRow();
-    row.insertCell(0).textContent = students[i].name;
-    row.insertCell(1).textContent = students[i].groop;
-    row.insertCell(2).textContent = students[i].tarrif;
-    row.insertCell(3).textContent = students[i].allLessons;
-    row.insertCell(4).textContent = students[i].checkLessons;
+    row.insertCell(0).textContent = array[i].name;
+    row.insertCell(1).textContent = array[i].groop;
+    row.insertCell(2).textContent = array[i].tarrif;
+    row.insertCell(3).textContent = array[i].allLessons;
+   
   }
 
   tableContainer.appendChild(table);
-  table.addEventListener('click', createNewTableWithDates(students));
+  table.addEventListener('click', createNewTableWithDates(array));
+}
+
+let currentTeacherObj;
+
+
+
+function renderRadioBatonsandText(teachers) {
+  const mainContent = document.querySelector('.content'); 
+  const miniDiv = document.createElement('div');
+
+  mainContent.appendChild(miniDiv);
+  miniDiv.innerHTML = `
+    <div class="mini-container mt-3">
+      <select id="teacherSelect" class="form-select mt-2 mb-2 w-50 mx-auto"></select>
+      <p class="text-start mt-4">Загальний дохід викладача: <button type='button' class='ms-4 text-center bg-primary btn bg-info' value="0" id="totalIncomeTeacher">0</button></p>
+      <p class="text-start mt-4">Загальний дохід групы: <button type='button' class='ms-4 text-center bg-primary btn bg-info' value="0" id="totalIncomeGroup">0</button></p>
+      <p class="text-start mt-4">Чистий дохід за 2 тижні: <button type='button' class='ms-4 text-center bg-primary btn bg-info' id="clearIncome">0</button></p>
+    </div>
+  `;
+  
+  const teacherSelect = document.getElementById('teacherSelect');
+
+  for (let i = 0; i < teachers.length; i++) {
+    const option = document.createElement('option');
+    option.value = teachers[i].id; 
+    option.textContent = teachers[i].name;
+    teacherSelect.appendChild(option);
+  }
+
+  teacherSelect.addEventListener('change', onSelectTeacher)
+  
+  function onSelectTeacher(e) {
+      currentTeacher =  e.target.selectedOptions[0].textContent
+      if(currentTeacher === "Марк") {
+        currentTeacherObj = teachers.find((t) => t.name === "Марк");
+      } else {
+        currentTeacherObj = teachers.find((t) => t.name === "Ольга");
+       
+      }
+   }
+  
+  
+}
+
+let incomeArray = [];
+const attendanceData = { students: {}, dates: {} };
+const datesArray = [];
+
+
+function updateDatesArray(dateKey, count, teacher) {
+  // Ищем объект с текущей датой в массиве
+  const dateObject = datesArray.find((obj) => obj.date === dateKey);
+
+  // Если объект существует и ячейка не отмечена, уменьшаем count
+  if (dateObject && count === 0) {
+      dateObject.count = dateObject.count > 0 ? dateObject.count - 1 : 0;
+      dateObject.teacherIncome = dateObject.count >= 2 ? teacher.bidGroup : teacher.bidIndiv;
+
+      // Если count стал равен 0, удаляем объект из массива
+      if (dateObject.count === 0) {
+          const indexToRemove = datesArray.indexOf(dateObject);
+          if (indexToRemove !== -1) {
+              datesArray.splice(indexToRemove, 1);
+          }
+      }
+  } else {
+      // Иначе, обновляем объект в массиве
+      if (dateObject) {
+          dateObject.count = count;
+          dateObject.teacherIncome = count >= 2 ? teacher.bidGroup : teacher.bidIndiv;
+      } else {
+          // Иначе, создаем новый объект и добавляем в массив
+          datesArray.push({ date: dateKey, count, teacherIncome: count >= 2 ? teacher.bidGroup : teacher.bidIndiv });
+      }
+  }
+
+  console.log(datesArray);
+  
 }
 
 function createNewTableWithDates(studentsArray) {
@@ -191,12 +265,15 @@ function createNewTableWithDates(studentsArray) {
   const newHeaderRow = newTable.createTHead().insertRow();
   const nameHeaderCell = newHeaderRow.insertCell(0);
   nameHeaderCell.textContent = 'ИМЯ';
+ 
 
   for (let i = 1; i <= 14; i++) {
     const date = i < 10 ? `0${i}.11` : `${i}.11`;
     const dateCell = newHeaderRow.insertCell(i);
     dateCell.textContent = date;
   }
+
+  
 
   for (let i = 0; i < studentsArray.length; i++) {
     const studentRow = newTable.insertRow();
@@ -209,235 +286,115 @@ function createNewTableWithDates(studentsArray) {
         'click',
         (function (index, date) {
           return function () {
-            toggleCellColor(index, date);
+            toggleCellColor(index, date, );
+            
           };
         })(i, j)
       );
+      dateCell.id = `attendanceCell-${studentsArray[i].id}-${j}`;
     }
+
+    
   }
 
   newTableContainer.appendChild(newTable);
-
-  function getAttendedStudents(studentsArray) {
-    return studentsArray.filter(student => student.checkLessons > 0);
-  }
-
-  function calculateTeacherPayment(teacher, attendedStudents) {
-    const perStudentBid = 150;
-    const groupBid = 200;
-
-    const teacherBid = attendedStudents.length > 1 ? groupBid : perStudentBid;
-
-    return teacherBid;
-  }
-
-  function calculatePayments(studentsArray, teacher, lessonPrice) {
-    const attendedStudents = getAttendedStudents(studentsArray);
-
-    const studentPayments = attendedStudents.map(student => {
-      const payment = student.checkLessons * lessonPrice;
-      console.log(`Студент ${student.name} будет списано: ${payment}`);
-      return payment;
-    });
-
-    const totalStudentPayments = studentPayments.reduce(
-      (total, payment) => total + payment,
-      0
-    );
-
-    const teacherBid = calculateTeacherPayment(teacher, attendedStudents);
-    const teacherPayment = totalStudentPayments - teacherBid;
-
-    console.log(`Учитель получит: ${teacherPayment}`);
-    console.log(`Количество уроков для оплаты: ${totalStudentPayments}`);
-  }
-
-  function getLessonPrice(tariff) {
-    if (tariff === 3500) {
-      return 437.5; // Цена за урок для тарифа 3500
-    } else if (tariff === 2500) {
-      return 312.5; // Цена за урок для тарифа 2500
-    } else {
-      return 0; // Если тариф неизвестен, вернем 0
-    }
-  }
-  function toggleCellColor(studentIndex, dateIndex) {
+ 
+  
+  function toggleCellColor(studentIndex, dateIndex,) {
     const cell = newTable.rows[studentIndex + 1].cells[dateIndex];
     const student = studentsArray[studentIndex];
+    const studentKey = students[studentIndex].id;
+    const dateKey = `Day${dateIndex}`;
+
+    attendanceData.students[studentKey] = attendanceData.students[studentKey] || {};
+    attendanceData.students[studentKey][dateKey] = (attendanceData.students[studentKey][dateKey] || 0) + 1;
+
+    const currentCount = attendanceData.dates[dateKey] || 0;
 
     if (cell.style.backgroundColor === 'red') {
-      cell.style.backgroundColor = '';
-      student.checkLessons -= 1;
+        // Если ячейка уже красная, уменьшаем count на 1
+        attendanceData.dates[dateKey] = currentCount > 0 ? currentCount - 1 : 0;
+        cancelPayment(student);
+        
     } else {
-      cell.style.backgroundColor = 'red';
-      student.checkLessons += 1;
+        // Если ячейка не красная, увеличиваем count на 1
+        attendanceData.dates[dateKey] = currentCount + 1;
+        makePayment(student);
+        
+        
     }
 
-    const lessonPrice = getLessonPrice(student.tarrif);
-    calculatePayments(studentsArray, teachers[0], lessonPrice);
+    function makePayment(student) {
+      let studIncome = document.querySelector('#totalIncomeGroup');
+      
+      if (student.tarrif === 3500) {
+        studIncome.value = Number(studIncome.value) + 437.5;
+      } else if (student.tarrif === 2500) {
+        studIncome.value = Number(studIncome.value) + 312.5;
+      }
+    
+      incomeArray.push(Number(studIncome.value));
+      if(incomeArray.length == 0) {
+        studIncome.textContent = '0'
+      }else {
+        studIncome.textContent = `${incomeArray[incomeArray.length - 1]}`
+      }
+    
+    }
+    
+    function cancelPayment(student) {
+      let studIncome = document.querySelector('#totalIncomeGroup');
+    
+      if (student.tarrif === 3500) {
+        studIncome.value = Number(studIncome.value) - 437.5;
+      } else if (student.tarrif === 2500) {
+        studIncome.value = Number(studIncome.value) - 312.5;
+      }
+    
+      incomeArray.pop(); 
+      console.log(incomeArray);
+      if(incomeArray.length == 0) {
+        studIncome.textContent = '0'
+      }else {
+        studIncome.textContent = `${incomeArray[incomeArray.length - 1]}`
+      }
+      
+    }
+    
+    
+
+    // Обновляем массив с объектами дат
+    updateDatesArray(dateKey, attendanceData.dates[dateKey], currentTeacherObj);
+
+    // Обновляем цвет ячейки
+    cell.style.backgroundColor = cell.style.backgroundColor === 'red' ? '' : 'red';
+
+    function updateTotalIncomeTeacher() {
+      const totalIncomeTeacherElement = document.querySelector('#totalIncomeTeacher');
+      const total = document.querySelector('#clearIncome')
+      let studIncome = document.querySelector('#totalIncomeGroup');
+      
+      // Вычисляем сумму teacherIncome из всех объектов в datesArray
+      const totalTeacherIncome = datesArray.reduce((sum, dateObject) => sum + dateObject.teacherIncome, 0);
+      
+      // Записываем сумму в элемент
+      totalIncomeTeacherElement.value = Number(totalTeacherIncome);
+      totalIncomeTeacherElement.textContent = `${totalIncomeTeacherElement.value}`
+
+      total.value = Number(studIncome.value - totalTeacherIncome)
+      total.textContent = `${total.value}`
   }
+
+  updateTotalIncomeTeacher()    
+    
+
 }
 
-// function createNewTableWithDates(studentsArray) {
-//   const newTableContainer = document.querySelector('.content');
-//   const newTable = document.createElement('table');
-//   newTable.classList.add(
-//     'table',
-//     'table-sm',
-//     'table-primary',
-//     'table-bordered',
-//     'border-primary',
-//     'w-50',
-//     'mx-auto'
-//   );
+}
 
-//   const newHeaderRow = newTable.createTHead().insertRow();
-//   const nameHeaderCell = newHeaderRow.insertCell(0);
-//   nameHeaderCell.textContent = 'ИМЯ';
 
-//   for (let i = 1; i <= 14; i++) {
-//     const date = i < 10 ? `0${i}.11` : `${i}.11`;
-//     const dateCell = newHeaderRow.insertCell(i);
-//     dateCell.textContent = date;
-//   }
 
-//   for (let i = 0; i < studentsArray.length; i++) {
-//     const studentRow = newTable.insertRow();
-//     const nameCell = studentRow.insertCell(0);
-//     nameCell.textContent = studentsArray[i].name;
 
-//     for (let j = 1; j <= 14; j++) {
-//       const dateCell = studentRow.insertCell(j);
-//       dateCell.addEventListener(
-//         'click',
-//         (function (index, date) {
-//           return function () {
-//             toggleCellColor(index, date);
-//           };
-//         })(i, j)
-//       );
-//     }
-//   }
-
-//   newTableContainer.appendChild(newTable);
-
-//   function toggleCellColor(studentIndex, dateIndex) {
-//     const cell = newTable.rows[studentIndex + 1].cells[dateIndex];
-//     const students = studentsArray[studentIndex];
-//     const teachersArray = teachers;
-
-//     function calculateStudentPayment(student, lessonPrice) {
-//       const attendedStudents = student.checkLessons;
-//       return attendedStudents * lessonPrice;
-//     }
-
-//     function calculateTeacherPayment(teacher, lessonPrice, numberOfStudents) {
-//       const totalIncome = lessonPrice * numberOfStudents;
-//       const teacherBid = teacher.bid;
-
-//       return totalIncome - teacherBid;
-//     }
-
-//     function getLessonPrice(tariff) {
-//       if (tariff === 3500) {
-//         return 437.5; // Цена за урок для тарифа 3500
-//       } else if (tariff === 2500) {
-//         return 312.5; // Цена за урок для тарифа 2500
-//       } else {
-//         return 0; // Если тариф неизвестен, вернем 0
-//       }
-//     }
-
-//     if (cell.style.backgroundColor === 'red') {
-//       cell.style.backgroundColor = '';
-//       students.checkLessons -= 1;
-//       students.tarrif += 300; // Возвращаем отнятое значение
-//     } else {
-//       cell.style.backgroundColor = 'red';
-//       students.checkLessons += 1;
-//       students.tarrif -= 300; // Отнимаем 300 от тарифа
-//     }
-
-//     const lessonPrice = getLessonPrice(studentsArray[studentIndex].tarrif);
-//     const studentPayment = calculateStudentPayment(
-//       studentsArray[studentIndex],
-//       lessonPrice
-//     );
-
-//     const teacherPayment = calculateTeacherPayment(
-//       teachersArray[0],
-//       lessonPrice,
-//       attendedStudents
-//     );
-
-//     console.log(
-//       `Студент ${studentsArray[studentIndex].name} будет списано: ${studentPayment}`
-//     );
-//     console.log(`Учитель получит: ${teacherPayment}`);
-//   }
-// }
-
-///////////////////////////////////////////////////////
-
-// function createNewTableWithDates(studentsArray) {
-//   const newTableContainer = document.querySelector('.content');
-//   const newTable = document.createElement('table');
-//   newTable.classList.add(
-//     'table',
-//     'table-sm',
-//     'table-primary',
-//     'table-bordered',
-//     'border-primary',
-//     'w-50',
-//     'mx-auto'
-//   );
-
-//   const newHeaderRow = newTable.createTHead().insertRow();
-//   const nameHeaderCell = newHeaderRow.insertCell(0);
-//   nameHeaderCell.textContent = 'ИМЯ';
-
-//   for (let i = 1; i <= 14; i++) {
-//     const date = i < 10 ? `0${i}.11` : `${i}.11`;
-//     const dateCell = newHeaderRow.insertCell(i);
-//     dateCell.textContent = date;
-//   }
-
-//   for (let i = 0; i < studentsArray.length; i++) {
-//     const studentRow = newTable.insertRow();
-//     const nameCell = studentRow.insertCell(0);
-//     nameCell.textContent = studentsArray[i].name;
-
-//     for (let j = 1; j <= 14; j++) {
-//       const dateCell = studentRow.insertCell(j);
-//       dateCell.addEventListener(
-//         'click',
-//         (function (index, date) {
-//           return function () {
-//             toggleCellColor(index, date);
-//           };
-//         })(i, j)
-//       );
-//     }
-//   }
-
-//   // newTableContainer.innerHTML = ''; // Очищаем контейнер перед добавлением новой таблицы
-//   newTableContainer.appendChild(newTable);
-
-// function toggleCellColor(studentIndex, dateIndex) {
-//   const cell = newTable.rows[studentIndex + 1].cells[dateIndex];
-//   if (cell.style.backgroundColor === 'red') {
-//     cell.style.backgroundColor = '';
-//     studentsArray[studentIndex].checkLessons -= 1;
-//   } else {
-//     cell.style.backgroundColor = 'red';
-//     studentsArray[studentIndex].checkLessons += 1;
-//   }
-//   renderTableGroop(
-//     'Выбрано: ' + studentsArray[studentIndex].groop,
-//     studentsArray
-//   );
-// }
-// }
 
 // ----------------------------------------------------------------------------
 
